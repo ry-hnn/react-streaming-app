@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  useLocation, useNavigate
-} from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "../styles.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
@@ -33,7 +31,7 @@ function FindMovie() {
 
       const elapsedTime = Date.now() - startTime;
       if (elapsedTime < 1500) {
-        await new Promise(resolve => setTimeout(resolve, 1500 - elapsedTime));
+        await new Promise((resolve) => setTimeout(resolve, 1500 - elapsedTime));
       }
 
       setMovies(data.Search || []);
@@ -42,14 +40,14 @@ function FindMovie() {
     } finally {
       setLoading(false);
     }
-};
+  };
   const handleSearchClick = () => {
     if (searchTerm.trim()) {
       fetchMovies(searchTerm.trim());
     }
     setTimeout(() => {
       fetchMovies(searchTerm.trim());
-    }, 2000); 
+    }, 2000);
   };
 
   const handleEnterKey = (e) => {
@@ -67,36 +65,46 @@ function FindMovie() {
   return (
     <div className="findmovie-page">
       <div className="findmovie-content">
-      <div className="search-container">
-        <input
-          type="text"
-          className="input-search__find-movie"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          onKeyDown={(e) => handleEnterKey(e)}
-        />
+        <div className="search-container">
+          <input
+            type="text"
+            className="input-search__find-movie"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={(e) => handleEnterKey(e)}
+          />
 
-        <button className="search-button__find-movie" onClick={handleSearchClick} disabled={loading}>
-          {loading ? (
-            <i className="fas fa-spinner fa-spin"></i>
-          ) : (
-            <svg
-              className="search-icon"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 512 512"
-            >
-              <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
-            </svg>
-          )}
-        </button>
+          <button
+            className="search-button__find-movie"
+            onClick={handleSearchClick}
+            disabled={loading}
+          >
+            {loading ? (
+              <i className="fas fa-spinner fa-spin"></i>
+            ) : (
+              <svg
+                className="search-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+              >
+                <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
+              </svg>
+            )}
+          </button>
+        </div>
       </div>
 
-      </div>
-
+      <h1 className="search-results__text">
+          Search Results for "{searchTerm}"
+        </h1>
       <div className="movie-list">
-        <h1 className="search-results__text">Search Results for "{searchTerm}"</h1>
+       
         {movies.map((movie, index) => (
-          <div className="user-card" key={index} onClick={() => handleMovieClick(movie.imdbID)}>
+          <div
+            className="user-card"
+            key={index}
+            onClick={() => handleMovieClick(movie.imdbID)}
+          >
             <div className="user-card__container">
               <h3>{movie.Title}</h3>
               <p>
@@ -110,7 +118,6 @@ function FindMovie() {
           </div>
         ))}
       </div>
-      
 
       {/* <div className="year-range-container">
         <input

@@ -10,11 +10,12 @@ const App = () => {
     <Router>
       <div id="app">
         <nav className="navbar">
-          <a href="/" class="logo">
+          <a href="/">
             <div className="logo">
               <img src="./assets/streamReel.logo.png" alt="" />
             </div>
           </a>
+          <div className="nav-container">
           <ul className="nav-links">
             <li className="home-link">
               <Link to="/">Home</Link>
@@ -25,6 +26,7 @@ const App = () => {
           </ul>
           <div className="contact-button">
             <a href="#contact">Contact</a>
+          </div>
           </div>
         </nav>
 
