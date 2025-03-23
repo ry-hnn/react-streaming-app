@@ -346,7 +346,6 @@ Landing page
 }
 
 .findmovie-page {
-  background: url(./assets/violet.gradient.png) no-repeat center center;
   background-size:auto;
   height: 50vh;
 }
@@ -399,11 +398,11 @@ h1 {
 
 .search-results__text {
   margin: 28px;
-  color: white;
+  color: black
 }
 
 h3 {
-  color: white;
+  color: #000000;
   margin: 10px 10px
 }
 
