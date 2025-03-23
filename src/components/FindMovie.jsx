@@ -10,6 +10,8 @@ function FindMovie() {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState(search || "");
+  const [yearRange, setYearRange] = useState({ minYear: 1900, maxYear: 2025 });
+  const [filteredMovies, setFilteredMovies] = useState([]);
 
   useEffect(() => {
     if (searchTerm) {
@@ -17,23 +19,27 @@ function FindMovie() {
     }
   }, []);
 
+  useEffect(() => {
+    setFilteredMovies(filterMoviesByYear(movies, yearRange.minYear, yearRange.maxYear));
+  }, [movies, yearRange]);
+
   const fetchMovies = async (term) => {
     setLoading(true);
     const apiKey = "31ebf24f";
     const startTime = Date.now();
-
+  
     try {
       const response = await fetch(
-        `https://www.omdbapi.com/?s=${term}&apikey=${apiKey}`
+        `https://www.omdbapi.com/?s=${term}&y=${yearRange.minYear}-${yearRange.maxYear}&apikey=${apiKey}`
       );
       const data = await response.json();
       console.log("API Response:", data);
-
+  
       const elapsedTime = Date.now() - startTime;
       if (elapsedTime < 1500) {
         await new Promise((resolve) => setTimeout(resolve, 1500 - elapsedTime));
       }
-
+  
       setMovies(data.Search || []);
     } catch (error) {
       console.error("Error fetching movies:", error);
@@ -41,13 +47,11 @@ function FindMovie() {
       setLoading(false);
     }
   };
+
   const handleSearchClick = () => {
     if (searchTerm.trim()) {
       fetchMovies(searchTerm.trim());
     }
-    setTimeout(() => {
-      fetchMovies(searchTerm.trim());
-    }, 2000);
   };
 
   const handleEnterKey = (e) => {
@@ -61,6 +65,31 @@ function FindMovie() {
   const handleMovieClick = (movieId) => {
     navigate(`/movie/${movieId}`);
   };
+
+  const filterMoviesByYear = (movies, minYear, maxYear) => {
+    return movies.filter((movie) => {
+      const movieYear = parseInt(movie.Year);
+      return movieYear >= minYear && movieYear <= maxYear;
+    });
+  };
+
+  const handleYearRangeChange = (event, type) => {
+    const value = parseInt(event.target.value);
+    setYearRange(prevRange => {
+      const newRange = {
+        ...prevRange,
+        [type]: value
+      };
+      // Ensure minYear doesn't exceed maxYear and vice versa
+      if (type === 'minYear' && value > newRange.maxYear) {
+        newRange.maxYear = value;
+      } else if (type === 'maxYear' && value < newRange.minYear) {
+        newRange.minYear = value;
+      }
+      return newRange;
+    });
+  };
+
 
   return (
     <div className="findmovie-page">
@@ -94,12 +123,34 @@ function FindMovie() {
         </div>
       </div>
 
+      <div className="year-range-container">
+        <h3>
+          Filter by Year: {yearRange.minYear} - {yearRange.maxYear}
+        </h3>
+        <div className="slider-container">
+          <input
+            type="range"
+            id="min-year"
+            min="1900"
+            max="2025"
+            value={yearRange.minYear}
+            onChange={(e) => handleYearRangeChange(e, "minYear")}
+          />
+          <input
+            type="range"
+            id="max-year"
+            min="1900"
+            max="2025"
+            value={yearRange.maxYear}
+            onChange={(e) => handleYearRangeChange(e, "maxYear")}
+          />
+        </div>
+      </div>
       <h1 className="search-results__text">
-          Search Results for "{searchTerm}"
-        </h1>
+        Search Results for "{searchTerm}"
+      </h1>
       <div className="movie-list">
-       
-        {movies.map((movie, index) => (
+        {filteredMovies.map((movie, index) => (
           <div
             className="user-card"
             key={index}
@@ -118,28 +169,6 @@ function FindMovie() {
           </div>
         ))}
       </div>
-
-      {/* <div className="year-range-container">
-        <input
-          type="range"
-          id="min-year"
-          min="1900"
-          max="2025"
-          defaultValue={yearRange.minYear}
-          onInput={enforceSliderRules}
-        />
-        <input
-          type="range"
-          id="max-year"
-          min="1900"
-          max="2025"
-          defaultValue={yearRange.maxYear}
-          onInput={enforceSliderRules}
-        />
-        <div id="year-range">
-          {yearRange.minYear} - {yearRange.maxYear}
-        </div>
-      </div> */}
     </div>
   );
 }
